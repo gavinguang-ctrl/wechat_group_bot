@@ -1,0 +1,7 @@
+wxauto
+pyzbar
+Pillow
+opencv-python
+pyautogui
+pyperclip
+openai

@@ -1,0 +1,10 @@
+*.pyc
+__pycache__/
+venv/
+*.log
+group_db.json
+processed.json
+qrcodes/
+debug_*.png
+.idea/
+.vscode/
