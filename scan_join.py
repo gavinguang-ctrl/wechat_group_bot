@@ -77,7 +77,7 @@ def get_session_set(wx):
 
 
 def scan_all_folders():
-    """扫描所有日期文件夹，返回所有二维码图片信息（按日期倒序）"""
+    """扫描最近日期文件夹的二维码图片信息"""
     all_items = []
     if not os.path.isdir(QR_CODE_ROOT):
         return all_items
@@ -88,24 +88,28 @@ def scan_all_folders():
         reverse=True,
     )
 
-    for date_dir in date_dirs:
-        folder = os.path.join(QR_CODE_ROOT, date_dir)
-        files = sorted(os.listdir(folder))
-        for filename in files:
-            ext = os.path.splitext(filename)[1].lower()
-            if ext not in SUPPORTED_IMAGE_EXTS:
-                continue
-            filepath = os.path.join(folder, filename)
-            group_name, author = _parse_filename(filename)
-            # 用 日期/文件名 作为唯一标识
-            qr_key = f"{date_dir}/{filename}"
-            all_items.append({
-                "file": qr_key,
-                "path": filepath,
-                "group_name": group_name,
-                "author": author,
-                "date_dir": date_dir,
-            })
+    # 只扫描最近的日期文件夹
+    if not date_dirs:
+        return all_items
+
+    latest_date_dir = date_dirs[0]
+    folder = os.path.join(QR_CODE_ROOT, latest_date_dir)
+    files = sorted(os.listdir(folder))
+    for filename in files:
+        ext = os.path.splitext(filename)[1].lower()
+        if ext not in SUPPORTED_IMAGE_EXTS:
+            continue
+        filepath = os.path.join(folder, filename)
+        group_name, author = _parse_filename(filename)
+        # 用 日期/文件名 作为唯一标识
+        qr_key = f"{latest_date_dir}/{filename}"
+        all_items.append({
+            "file": qr_key,
+            "path": filepath,
+            "group_name": group_name,
+            "author": author,
+            "date_dir": latest_date_dir,
+        })
 
     return all_items
 
